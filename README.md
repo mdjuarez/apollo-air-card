@@ -147,7 +147,7 @@ card_mod:
 ```
 5.  chips-only false vs true
    ```yaml
-type: custom:apollo-prueba-card
+type: custom:apollo-air1-card
 slug: apollo_air_max
 icon: mdi:bed
 name: Max
