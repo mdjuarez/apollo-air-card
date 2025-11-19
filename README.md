@@ -101,9 +101,7 @@ sensor.apollo_air_max_methane
 sensor.apollo_air_max_ammonia
 ```
 
-Then the correct slug is:
-
-**apollo_air_max**
+Then the correct slug is: **apollo_air_max**
 
 The card automatically builds all entity IDs 
 
