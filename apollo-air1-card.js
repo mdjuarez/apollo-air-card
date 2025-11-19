@@ -41,7 +41,7 @@ class ApolloAir1Card extends LitEl {
       case "no2":  return v<=20?"#9EDF9C":v<=50?"#78B3CE":v<=100?"#FBD288":v<=200?"#FF9C73":"#F95454";
       case "pm4":  return v<=10?"#9EDF9C":v<=30?"#78B3CE":v<=50?"#FBD288":v<=100?"#FF9C73":"#F95454";
       case "ethanol": return v<=5?"#9EDF9C":v<=20?"#78B3CE":v<=50?"#FBD288":v<=100?"#FF9C73":"#F95454";
-      case "nox":  return v<=0.2?"#9EDF9C":v<=0.5?"#78B3CE":v<=1?"#FBD288":v<=2?"#FF9C73":"#F95454";
+      case "nox":  return v<=1?"#9EDF9C":v<=5?"#78B3CE":v<=20?"#FBD288":v<=50?"#FF9C73":"#F95454";
       case "pm10": return v<=20?"#9EDF9C":v<=50?"#78B3CE":v<=100?"#FBD288":v<=250?"#FF9C73":"#F95454";
       case "h2":   return v<=0.1?"#9EDF9C":v<=1?"#78B3CE":v<=5?"#FBD288":v<=10?"#FF9C73":"#F95454";
       case "temp": return "var(--apollo-temp-chip, #E7ECF0)";
