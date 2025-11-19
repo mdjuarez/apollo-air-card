@@ -14,7 +14,8 @@ class ApolloAir1Card extends LitEl {
       throw new Error("Config inválida. Usa: slug (obligatorio). icon, title y popup opcionales.");
     }
     this._config = {
-      popup: config.popup !== false, // default: true
+      popup: config.popup !== false,              // default: true
+      chipsOnly: config["chips-only"] === true,   // default: false
       ...config,
     };
   }
@@ -43,6 +44,9 @@ class ApolloAir1Card extends LitEl {
       case "nox":  return v<=0.2?"#9EDF9C":v<=0.5?"#78B3CE":v<=1?"#FBD288":v<=2?"#FF9C73":"#F95454";
       case "pm10": return v<=20?"#9EDF9C":v<=50?"#78B3CE":v<=100?"#FBD288":v<=250?"#FF9C73":"#F95454";
       case "h2":   return v<=0.1?"#9EDF9C":v<=1?"#78B3CE":v<=5?"#FBD288":v<=10?"#FF9C73":"#F95454";
+      case "temp": return "var(--apollo-temp-chip, #E7ECF0)";
+      case "hum":  return "var(--apollo-hum-chip,  #E7ECF0)";
+      case "voc":  return v<=100?"#9EDF9C":v<=200?"#78B3CE":v<=300?"#FBD288":v<=400?"#FF9C73":"#F95454";
       default:     return "#DDD";
     }
   }
@@ -76,23 +80,23 @@ class ApolloAir1Card extends LitEl {
           type: "entities",
           title: "Sensors",
           entities: [
-            { entity: `sensor.${slug}_carbon_monoxide`, name: "Monóxido de Carbono (CO)", icon: "mdi:molecule-co" },
-            { entity: `sensor.${slug}_co2`, name: "Dióxido de Carbono (CO₂)", icon: "mdi:molecule-co2" },
-            { entity: `sensor.${slug}_nitrogen_dioxide`, name: "Dióxido de Nitrógeno (NO₂)", icon: "mdi:molecule" },
-            { entity: `sensor.${slug}_sen55_nox`, name: "Óxidos de Nitrógeno (NOx)", icon: "mdi:radiator" },
-            { entity: `sensor.${slug}_pm_1_m_weight_concentration`, name: "Concentración PM1 (<1µm)", icon: "mdi:chemical-weapon" },
-            { entity: `sensor.${slug}_pm_2_5_m_weight_concentration`, name: "Concentración PM2.5 (<2.5µm)", icon: "mdi:chemical-weapon" },
-            { entity: `sensor.${slug}_pm_4_m_weight_concentration`, name: "Concentración PM4 (<4µm)", icon: "mdi:chemical-weapon" },
-            { entity: `sensor.${slug}_pm_10_m_weight_concentration`, name: "Concentración PM10 (<10µm)", icon: "mdi:chemical-weapon" },
-            { entity: `sensor.${slug}_ammonia`, name: "Amoníaco (NH₃)", icon: "mdi:cloud-alert" },
-            { entity: `sensor.${slug}_methane`, name: "Metano (CH₄)", icon: "mdi:gas-burner" },
-            { entity: `sensor.${slug}_ethanol`, name: "Etanol", icon: "mdi:flask-outline" },
-            { entity: `sensor.${slug}_hydrogen`, name: "Hidrógeno (H₂)", icon: "mdi:atom" },
-            { entity: `sensor.${slug}_sen55_voc`, name: "Compuestos Orgánicos Volátiles (VOC)", icon: "mdi:biohazard" },
-            { entity: `sensor.${slug}_dps310_pressure`, name: "Presión Atmosférica", icon: "mdi:weather-windy" },
-            { entity: `sensor.${slug}_sen55_humidity`, name: "Humedad", icon: "mdi:water-percent" },
-            { entity: `sensor.${slug}_sen55_temperature`, name: "Temperatura", icon: "mdi:thermometer" },
-            { entity: `sensor.${slug}_voc_quality`, name: "Calidad del Aire (VOC)", icon: "mdi:air-purifier" },
+            { entity: `sensor.${slug}_carbon_monoxide`,               name: "Monóxido de Carbono (CO)",     icon: "mdi:molecule-co" },
+            { entity: `sensor.${slug}_co2`,                            name: "Dióxido de Carbono (CO₂)",     icon: "mdi:molecule-co2" },
+            { entity: `sensor.${slug}_nitrogen_dioxide`,               name: "Dióxido de Nitrógeno (NO₂)",   icon: "mdi:molecule" },
+            { entity: `sensor.${slug}_sen55_nox`,                      name: "Óxidos de Nitrógeno (NOx)",     icon: "mdi:radiator" },
+            { entity: `sensor.${slug}_pm_1_m_weight_concentration`,    name: "Concentración PM1 (<1µm)",     icon: "mdi:chemical-weapon" },
+            { entity: `sensor.${slug}_pm_2_5_m_weight_concentration`,  name: "Concentración PM2.5 (<2.5µm)", icon: "mdi:chemical-weapon" },
+            { entity: `sensor.${slug}_pm_4_m_weight_concentration`,    name: "Concentración PM4 (<4µm)",     icon: "mdi:chemical-weapon" },
+            { entity: `sensor.${slug}_pm_10_m_weight_concentration`,   name: "Concentración PM10 (<10µm)",   icon: "mdi:chemical-weapon" },
+            { entity: `sensor.${slug}_ammonia`,                        name: "Amoníaco (NH₃)",               icon: "mdi:cloud-alert" },
+            { entity: `sensor.${slug}_methane`,                        name: "Metano (CH₄)",                 icon: "mdi:gas-burner" },
+            { entity: `sensor.${slug}_ethanol`,                        name: "Etanol",                        icon: "mdi:flask-outline" },
+            { entity: `sensor.${slug}_hydrogen`,                       name: "Hidrógeno (H₂)",               icon: "mdi:atom" },
+            { entity: `sensor.${slug}_sen55_voc`,                      name: "Compuestos Orgánicos Volátiles (VOC)", icon: "mdi:biohazard" },
+            { entity: `sensor.${slug}_dps310_pressure`,                name: "Presión Atmosférica",          icon: "mdi:weather-windy" },
+            { entity: `sensor.${slug}_sen55_humidity`,                 name: "Humedad",                      icon: "mdi:water-percent" },
+            { entity: `sensor.${slug}_sen55_temperature`,              name: "Temperatura",                  icon: "mdi:thermometer" },
+            { entity: `sensor.${slug}_voc_quality`,                    name: "Calidad del Aire (VOC)",       icon: "mdi:air-purifier" },
           ],
         },
       ],
@@ -119,12 +123,19 @@ class ApolloAir1Card extends LitEl {
     const icon = this._config.icon || "mdi:bed";
     const displayName = this._config.title ?? this._config.name ?? this._nice(slug);
 
-    // Valores para Temperatura y Humedad
+    // marcar el host con atributo chips-only cuando corresponda
+    if (this._config.chipsOnly) {
+      this.setAttribute("chips-only", "");
+    } else {
+      this.removeAttribute("chips-only");
+    }
+
+    // Valores para Temperatura y Humedad (solo usados en modo clásico)
     const tempValue = this._num(`sensor.${slug}_sen55_temperature`);
-    const humValue = this._num(`sensor.${slug}_sen55_humidity`);
+    const humValue  = this._num(`sensor.${slug}_sen55_humidity`);
     
-    // 4 columnas de chips (sin la columna de Temp/Hum/VOC)
-    const chips = [
+    // 4 columnas base de chips
+    const baseChips = [
       [
         { icon:"mdi:molecule-co",      key:"co",   ent:`sensor.${slug}_carbon_monoxide`,              fmt:v=>this._fmt2(v) },
         { icon:"mdi:chemical-weapon",  key:"pm1",  ent:`sensor.${slug}_pm_1_m_weight_concentration`,  fmt:v=>this._fmt2(v) },
@@ -147,6 +158,18 @@ class ApolloAir1Card extends LitEl {
       ],
     ];
 
+    // Si chips-only: agregamos columna extra con temp/hum/voc
+    const chips = this._config.chipsOnly
+      ? [
+          [
+            { icon:"mdi:thermometer",   key:"temp", ent:`sensor.${slug}_sen55_temperature`, fmt:v=>this._fmt0(v) },
+            { icon:"mdi:water-percent", key:"hum",  ent:`sensor.${slug}_sen55_humidity`,    fmt:v=>this._fmt0(v) },
+            { icon:"mdi:biohazard",     key:"voc",  ent:`sensor.${slug}_sen55_voc`,         fmt:v=>this._fmt0(v) },
+          ],
+          ...baseChips
+        ]
+      : baseChips;
+
     return html`
       <ha-card class="wrap">
         <div class="img_cell" @click=${this._config.popup !== false ? this._openPopup.bind(this) : null}>
@@ -155,17 +178,19 @@ class ApolloAir1Card extends LitEl {
         
         <div class="content-left">
           <div class="name">${displayName}</div>
-          <div class="temp-value">
-            <ha-icon icon="mdi:thermometer"></ha-icon> 
-            ${this._fmt1(tempValue)}<span class="unit">°C</span>
-          </div>
-          <div class="hum-value">
-            <ha-icon icon="mdi:water-percent"></ha-icon>
-            ${this._fmt0(humValue)}<span class="unit">%</span>
-          </div>
+          ${this._config.chipsOnly ? "" : html`
+            <div class="temp-value">
+              <ha-icon icon="mdi:thermometer"></ha-icon> 
+              ${this._fmt1(tempValue)}<span class="unit">°C</span>
+            </div>
+            <div class="hum-value">
+              <ha-icon icon="mdi:water-percent"></ha-icon>
+              ${this._fmt0(humValue)}<span class="unit">%</span>
+            </div>
+          `}
         </div>
 
-        <div class="grid">
+        <div class="grid ${this._config.chipsOnly ? 'chips-only' : ''}">
           ${chips.map((col, idx) => html`
             <div class="btn btn${idx+1}">
               ${col.map(c => {
@@ -187,10 +212,10 @@ class ApolloAir1Card extends LitEl {
   }
 
   // ----------------------------------------------------------------------
-  // Styles (CSS) - FIX DE COLOR Y UNIÓN DE HUMEDAD
+  // Styles (CSS)
   // ----------------------------------------------------------------------
-static get styles() {
-  return css`
+  static get styles() {
+    return css`
     .wrap {
       position: relative;
       padding: 22px 5px 21px 22px;
@@ -208,9 +233,36 @@ static get styles() {
 
       --apollo-temp-line-height: 1.1;
 
-      /* Sólo tamaños; colores vienen de las vars o de fallbacks */
       --apollo-temp-size: 14px;
       --apollo-hum-size: 14px;
+    }
+
+    /* Defaults ESPECÍFICOS para modo chips-only, solo si chips-only está en true
+       (host tiene atributo chips-only). El usuario aún puede sobreescribirlos con card_mod. */
+    :host([chips-only]) {
+      /* Burbuja + icono (más grande y con mejor contraste) */
+      --apollo-bubble-size: 88px;
+      --apollo-bubble-offset: -12px;
+      --apollo-bubble-bg: #a8afb8;
+      --apollo-icon-size: 44px;
+      --apollo-icon-color: black;
+      --apollo-icon-opacity: 0.6;
+
+      /* Acomodo del bloque de chips para que no pisen la burbuja */
+      --apollo-chips-gutter: 16px;
+      --apollo-col-gap: 8px;
+      --apollo-row-gap: 3px;
+
+      /* Chips compactos pero legibles */
+      --apollo-chip-icon-size: 14px;
+      --apollo-chip-padding-y: 2px;
+      --apollo-chip-padding-x: 6px;
+      --apollo-chip-stack-gap: 5px;
+
+      /* Badge detrás del pictograma del chip */
+      --apollo-icon-badge-bg: rgba(255,255,255,.28);
+      --apollo-icon-badge-radius: 9999px;
+      --apollo-icon-badge-pad: 4px;
     }
 
     .content-left {
@@ -316,6 +368,14 @@ static get styles() {
       height: 100%;
     }
 
+    .grid.chips-only {
+      grid-template-areas:
+        "btn1 btn2 btn3 btn4 btn5"
+        "btn1 btn2 btn3 btn4 btn5"
+        "btn1 btn2 btn3 btn4 btn5";
+      grid-template-columns: repeat(5, max-content);
+    }
+
     .btn {
       display: flex;
       flex-direction: column;
@@ -326,6 +386,7 @@ static get styles() {
     .btn2 { grid-area: btn2; }
     .btn3 { grid-area: btn3; }
     .btn4 { grid-area: btn4; }
+    .btn5 { grid-area: btn5; }
 
     .chip {
       border-radius: 100px;
@@ -345,8 +406,6 @@ static get styles() {
       padding: var(--apollo-icon-badge-pad, 4px);
     }
   `;
+  }
 }
-
-}
-
 customElements.define("apollo-air1-card", ApolloAir1Card);
