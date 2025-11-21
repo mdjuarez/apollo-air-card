@@ -117,6 +117,7 @@ type: custom:apollo-air1-card
 slug: apollo_air_liz
 name: Liz Room
 icon: mdi:flower
+use_fahrenheit: true
 ```
 2. Disable popup
 ```yaml
