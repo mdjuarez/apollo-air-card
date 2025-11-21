@@ -16,6 +16,7 @@ class ApolloAir1Card extends LitEl {
     this._config = {
       popup: config.popup !== false,              // default: true
       chipsOnly: config["chips-only"] === true,   // default: false
+      use_fahrenheit: config.use_fahrenheit === true,     // default: false (solo cambia la unidad)
       ...config,
     };
   }
@@ -133,6 +134,8 @@ class ApolloAir1Card extends LitEl {
     // Valores para Temperatura y Humedad (solo usados en modo clásico)
     const tempValue = this._num(`sensor.${slug}_sen55_temperature`);
     const humValue  = this._num(`sensor.${slug}_sen55_humidity`);
+    const tempUnit  = this._config.use_fahrenheit ? "°F" : "°C";  // <-- solo cambia el label
+
     
     // 4 columnas base de chips
     const baseChips = [
@@ -181,7 +184,7 @@ class ApolloAir1Card extends LitEl {
           ${this._config.chipsOnly ? "" : html`
             <div class="temp-value">
               <ha-icon icon="mdi:thermometer"></ha-icon> 
-              ${this._fmt1(tempValue)}<span class="unit">°C</span>
+              ${this._fmt1(tempValue)}<span class="unit">${tempUnit}</span>
             </div>
             <div class="hum-value">
               <ha-icon icon="mdi:water-percent"></ha-icon>
