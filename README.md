@@ -86,6 +86,8 @@ name: Max
 | **title** | ❌ Optional | Title used in the popup window when clicking the main icon. Defaults to the display name. |
 | **popup** | ❌ Optional | Enables or disables the popup. Default: `true`. Set `popup: false` to disable it. |
 | **chips-only** | ❌ Optional | When `true`, shows a **5-column layout** where Temperature, Humidity and VOC are displayed as chips (and the big temp/humidity section on the left is hidden). Default: `false`. |
+| **use_fahrenheit** | ❌ Optional | When `true`, the main temperature label shows `°F` instead of `°C`. The value is taken directly from the sensor as-is. |
+
 
 _In the classic layout, the VOC chip was omitted since VOC is not a key safety metric in normal home environments. Use chips-only = true if you want it.
 The chips-only option slightly adjusts the chip layout to fit all sensors within the card, but all visual parameters can still be fully overridden through CSS variables for users who want deeper customization._
