@@ -237,6 +237,29 @@ card_mod:
     }
 ```
 
+# ⚠️ Idea!
+
+Use it together with **swipe-card** to flip between the score and the full Apollo AIR-1 view:
+
+![aqi](https://github.com/user-attachments/assets/014013b9-d027-4c4b-8b48-421686bd376d)
+
+Example:
+```yaml
+type: custom:swipe-card
+cards:
+  - type: custom:apollo-air-score-card
+    slug: apollo_air_max
+    name: Air Quality - Max
+  - type: custom:apollo-air1-card
+    slug: apollo_air_max
+    icon: mdi:bed
+    name: Max
+```
+
+Swipe card 👉 https://github.com/bramkragten/swipe-card
+
+Apollo Air Score Card: 👉 https://github.com/mdjuarez/apollo-air-score-card
+
 ## 🧰 Beginner Installation Guide (Step-by-Step)
 
 This guide explains how to install the **Apollo AIR-1 custom card** even if you've never installed a custom card before.
