@@ -111,7 +111,7 @@ Then the correct slug is: **apollo_air_max**
 The card automatically builds all entity IDs 
 
 ### Examples
-1. Custom icon + custom name
+1. Custom icon + custom name + Fahrenheit
 ```yaml
 type: custom:apollo-air1-card
 slug: apollo_air_liz
